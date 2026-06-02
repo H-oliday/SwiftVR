@@ -19,7 +19,6 @@
 
 
 ## Updates
----
 - [2026/06] Release the inference code and pretrained weights 🎉
 
 
@@ -27,8 +26,6 @@
 
 
 ## ✨ Highlights
----
-
 - **Mask-free shifted-window self-attention (MFSWA).** Each spatial window is **pre-gathered into a dense tensor**, so every attention call reduces to a single standard scaled-dot-product (SDPA) call — *no attention mask, cyclic shift, or padding ever enters the graph*. This gives a **1.62× throughput gain over its full-attention teacher** at essentially identical quality, with **no dedicated sparse kernel**.
 - **Restoration-aware Autoencoder (ReAE).** A lightweight encoder–decoder jointly fine-tuned with the DiT in pixel space removes the heavy-3D-VAE / tiled-decoding bottleneck.
 - **Causal chunk-wise streaming.** A minimal causal protocol (no rolling KV cache, no overlapped DiT inference) bounds the temporal axis, confining the residual \(\mathcal{O}(N^2)\) cost to the spatial axes.
@@ -36,8 +33,6 @@
 
 
 ## 📊 Results
----
-
 ### Efficiency at 2560×1440 (single H100, causal streaming, 24 frames)
 
 | Metric | SeedVR2-3B (tile)| DOVE (tile)| FlashVSR-Tiny | **RVR (Ours)** |
@@ -55,8 +50,6 @@
 
 
 ## 🛠 Installation
----
-
 ```bash
 git clone https://github.com/Holiday/RVR.git
 cd RVR
@@ -82,7 +75,6 @@ pip install -e .
 
 
 ## 🗂 Model Zoo
----
 | Model Name | Date | Backbone | Link |
 |---|---|---|---|
 | RVR | 2026.06 | Wan2.2-TI2V-5B | [🤗 HuggingFace](https://huggingface.co/H-oliday/RVR) |
@@ -104,7 +96,6 @@ checkpoints/
 
 
 ## 🚀 Quick Start
----
 ### Python API
 
 ```python
@@ -144,13 +135,12 @@ python scripts/inference.py \
   --dtype bfloat16 \
 ```
 
-Use `--upscale 4` instead of `--resolution`, or `--png` to write a PNG sequence.
+Use `--png` to write a PNG sequence.
 
 
 
 
 ## 📁 Repository Structure
----
 ```
 RVR/
 ├── README.md
@@ -176,7 +166,6 @@ RVR/
 
 
 ## 📖 Citation
----
 ```bibtex
 @article{yan2026rvr,
   title   = {RVR: One-step Generative Streaming Real-time Video Restoration},
@@ -189,13 +178,11 @@ RVR/
 
 
 ## 🙏 Acknowledgements
----
 RVR builds on [Wan2.2-TI2V-5B](https://github.com/Wan-Video), the lightweight autoencoder [TAEHV](https://github.com/madebyollin/taehv), and the [RealBasicVSR](https://github.com/ckkelvinchan/RealBasicVSR) degradation pipeline. We thank the authors of [SeedVR2](https://github.com/ByteDance-Seed/SeedVR), [DOVE](https://github.com/zhengchen1999/DOVE), and [FlashVSR](https://github.com/OpenImagingLab/FlashVSR) for releasing strong baselines, and the [UltraVideo](https://github.com/Tele-AI/UltraVideo) team for the training corpus.
 
 
 
 ## 📜 License
----
 Released under the [Apache 2.0 License](LICENSE). The Wan2.2 backbone and any third-party weights remain subject to their original licenses.
 
 <div align="center">
