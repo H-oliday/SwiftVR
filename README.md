@@ -175,19 +175,6 @@ RVR/
 > ★ marks the two contribution-critical files: the MFSWA processor in `transformer.py` and `reae.py`.
 
 
-
-
-## 🎬 More Visual Results
----
-> Full-length restored clips (low-quality input → RVR, played back to back).
-
-
-<video src="https://huggingface.co/H-oliday/RVR/resolve/main/assets/demo_1.mp4" controls width="100%"></video>
-
-<video src="https://huggingface.co/H-oliday/RVR/resolve/main/assets/demo_2.mp4" controls width="100%"></video>
-
-<video src="https://huggingface.co/H-oliday/RVR/resolve/main/assets/demo_3.mp4" controls width="100%"></video>
-
 ## 📖 Citation
 ---
 ```bibtex
