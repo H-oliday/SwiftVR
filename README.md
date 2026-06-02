@@ -162,18 +162,6 @@ RVR/
         └── dit.py                # one-step streaming DiT (fixed timestep, RoPE offsets)
 ```
 
-> ★ marks the two contribution-critical files: the MFSWA processor in `transformer.py` and `reae.py`.
-
-
-## 📖 Citation
-```bibtex
-@article{yan2026rvr,
-  title   = {RVR: One-step Generative Streaming Real-time Video Restoration},
-  author  = {Yan, Jiaqi and Chen, Xiangyu and Zhong, Xinlin and Liu, Jie and Zhou, Jiantao and Li, Xuelong},
-  journal = {arXiv preprint arXiv:XXXX.XXXXX},
-  year    = {2026}
-}
-```
 
 
 
