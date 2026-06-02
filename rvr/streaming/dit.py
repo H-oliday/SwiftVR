@@ -14,7 +14,7 @@ import torch
 
 from .chunk import ChunkSpec
 
-INFERENCE_TIMESTEP = 1000.0
+INFERENCE_TIMESTEP = 999.0
 ROPE_EXTEND_MARGIN = 256
 
 
