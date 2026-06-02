@@ -37,8 +37,8 @@
 
 | Metric | SeedVR2-3B (tile)| DOVE (tile)| FlashVSR-Tiny | **RVR (Ours)** |
 |---|:---:|:---:|:---:|:---:|
-| Avg. Time (s) ↓ | 17.320 | 27.615 | 2.493 | **0.766** |
-| **FPS ↑** | 1.39 | 0.85 | 9.61 | **31.32** |
+| Avg. Time (s) ↓ | 17.320 | 27.615 | 2.493 | 0.766 |
+| FPS ↑ | 1.39 | 0.85 | 9.61 | 31.32 |
 | Peak Mem. (GB) ↓ | 35.35 | 59.24 | 34.35 | 38.01 |
 
 > At **3840×2160**, every compared diffusion-based VR baseline **OOMs** on a single H100; RVR sustains **14 FPS**.
