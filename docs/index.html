@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="SwiftVR: the first generative video restoration model to reach real-time 1080p streaming on a consumer-grade GPU. 31 FPS at 2560x1440, 14 FPS at 4K on a single H100." />
+<meta name="keywords" content="Video Restoration, Diffusion, One-Step, Real-Time, Streaming, Super-Resolution" />
+<title>SwiftVR: Real-Time One-Step Generative Video Restoration</title>
+
+<!-- Open Graph -->
+<meta property="og:title" content="SwiftVR: Real-Time One-Step Generative Video Restoration" />
+<meta property="og:description" content="The first generative VR model to reach real-time 1080p streaming on a consumer-grade GPU." />
+<!-- OG image stays JPG: most social crawlers (FB / Twitter / Slack) don't support AVIF -->
+<meta property="og:image" content="static/images/teaser.jpg" />
+<meta property="og:type" content="website" />
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;500;700&family=Castoro:ital@0;1&display=swap" rel="stylesheet">
+
+<!-- Bulma & Font Awesome -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.4/css/academicons.min.css" />
+
+<!-- MathJax -->
+<script>
+  MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<!-- ============================================================
+     Video asset host. Change ONE line to switch between local dev
+     and production. The page reads <video data-src="..."> and
+     prepends this base path before the slider initializes.
+     ============================================================ -->
+<script>
+  // Local development (preview with python3 -m http.server):
+  // window.SWIFTVR_VIDEO_BASE = 'static/videos/';
+  // Production (videos hosted as GitHub Release assets):
+  window.SWIFTVR_VIDEO_BASE = 'https://github.com/H-oliday/SwiftVR/releases/download/page-assets/';
+</script>
+
+<link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+
+          <h1 class="title publication-title">
+            <span class="brand-swift">SwiftVR</span>: Real-Time One-Step Generative Video Restoration
+          </h1>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><a href="https://github.com/H-oliday" target="_blank">Jiaqi Yan</a><sup>1,2</sup>,</span>
+            <span class="author-block"><a href="https://chxy95.github.io/" target="_blank">Xiangyu Chen</a><sup>2</sup>,</span>
+            <span class="author-block"><a href="https://github.com/Seline02" target="_blank">Xinlin Zhong</a><sup>2,3</sup>,</span>
+            <span class="author-block"><a href="https://brotherhuang.github.io/" target="_blank">Haibin Huang</a><sup>2</sup></span>
+            <span class="author-block"><a href="https://scholar.google.com/citations?hl=en&user=PXlNTokAAAAJ" target="_blank">Chi Zhang</a><sup>2</sup></span>
+            <br>     
+            <span class="author-block"><a href="https://njulj.github.io/" target="_blank">Jie Liu</a><sup>3</sup></span>
+            <span class="author-block"><a href="https://www.fst.um.edu.mo/personal/jtzhou/" target="_blank">Jiantao Zhou</a><sup>1</sup></span>
+            <span class="author-block"><a href="http://xuelongli.cn/" target="_blank">Xuelong Li</a><sup>2</sup></span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>State Key Laboratory of Internet of Things for Smart City, <br> Department of Computer and Information Science, University of Macau,</span>
+            <span class="author-block"><sup>2</sup>Institute of Artificial Intelligence, China Telecom (TeleAI),</span>
+            <span class="author-block"><sup>3</sup>State Key Laboratory for Novel Software Technology, Nanjing University</span>
+          </div>
+
+
+          <!-- <div class="is-size-5 publication-venue">Preprint, 2026</div> -->
+
+          <div class="publication-links">
+            <span class="link-block">
+              <a href="https://arxiv.org/pdf/XXXX.XXXXX" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://github.com/H-oliday/SwiftVR" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fab fa-github"></i></span><span>Code</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://huggingface.co/H-oliday/SwiftVR" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">🤗</span><span>Model</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="#video-results" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-video"></i></span><span>Video</span>
+              </a>
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TEASER
+     ============================================================ -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <picture>
+        <source srcset="static/images/teaser.avif" type="image/avif" />
+        <img src="static/images/teaser.jpg" alt="SwiftVR teaser"
+             onerror="this.style.background='#f5f5f5';this.style.minHeight='280px';this.alt='teaser placeholder';" />
+      </picture>
+      <h2 class="subtitle has-text-centered">
+        <span class="brand-swift">SwiftVR</span> is the
+        <span class="dnerf">first</span> generative video restoration model to reach
+        <span class="dnerf">real-time 1080p streaming</span> on a consumer-grade GPU.
+        It sustains <b>31&nbsp;FPS</b> at QHD and <b>14&nbsp;FPS</b> at 4K on a single H100,
+        and <b>26&nbsp;FPS</b> at 1080p on an RTX 5090.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HEADLINE STATS
+     ============================================================ -->
+<section class="section stats-section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered is-multiline stat-row">
+      <div class="column">
+        <div class="stat-card">
+          <div class="stat-num">26<span class="stat-unit"> fps</span></div>
+          <div class="stat-cap">1920×1080 · RTX&nbsp;5090</div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="stat-card">
+          <div class="stat-num">31<span class="stat-unit"> fps</span></div>
+          <div class="stat-cap">2560×1440 · H100</div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="stat-card">
+          <div class="stat-num">14<span class="stat-unit"> fps</span></div>
+          <div class="stat-cap">3840×2160 · H100</div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="stat-card">
+          <div class="stat-num">1.62<span class="stat-unit">×</span></div>
+          <div class="stat-cap">vs full-attention teacher</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     VIDEO RESULTS - BEFORE / AFTER SLIDERS
+     ============================================================ -->
+<section class="section" id="video-results">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Video Results</h2>
+    <p class="content has-text-centered slider-help">
+      Drag the slider <i class="fas fa-arrows-left-right"></i> to compare
+      <b>Low-Quality Input</b> (left) with <b>SwiftVR Restoration</b> (right).
+      Tap a card to fullscreen on mobile.
+    </p>
+
+    <!-- Sample 1 -->
+    <div class="va-card">
+      <div class="va-title">Sample 1 — Falcon (real-world)</div>
+      <div class="va-slider" data-va-slider>
+        <video class="va-video va-after" muted loop autoplay playsinline preload="metadata"
+               data-src="demo_1_hq.mp4"></video>
+        <video class="va-video va-before" muted loop autoplay playsinline preload="metadata"
+               data-src="demo_1_lq.mp4"></video>
+        <div class="va-divider"></div>
+        <div class="va-handle" aria-label="Drag to compare">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M8 5l-6 7 6 7V5zm8 0v14l6-7-6-7z"/></svg>
+        </div>
+        <div class="va-label va-label-left">LQ Input</div>
+        <div class="va-label va-label-right">SwiftVR</div>
+      </div>
+      <div class="va-controls" data-va-controls>
+        <button class="va-btn-play" aria-label="Play / Pause" type="button">
+          <svg class="icon-play"  viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+          <svg class="icon-pause" viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+        </button>
+        <div class="va-progress" data-va-progress>
+          <div class="va-progress-fill"></div>
+          <div class="va-progress-thumb"></div>
+        </div>
+        <span class="va-time">
+          <span class="va-time-cur">0:00</span><span class="va-time-sep">/</span><span class="va-time-tot">0:00</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Sample 2 -->
+    <div class="va-card">
+      <div class="va-title">Sample 2 — Street scene</div>
+      <div class="va-slider" data-va-slider>
+        <video class="va-video va-after" muted loop autoplay playsinline preload="metadata"
+               data-src="demo_2_hq.mp4"></video>
+        <video class="va-video va-before" muted loop autoplay playsinline preload="metadata"
+               data-src="demo_2_lq.mp4"></video>
+        <div class="va-divider"></div>
+        <div class="va-handle">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M8 5l-6 7 6 7V5zm8 0v14l6-7-6-7z"/></svg>
+        </div>
+        <div class="va-label va-label-left">LQ Input</div>
+        <div class="va-label va-label-right">SwiftVR</div>
+      </div>
+      <div class="va-controls" data-va-controls>
+        <button class="va-btn-play" aria-label="Play / Pause" type="button">
+          <svg class="icon-play"  viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+          <svg class="icon-pause" viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+        </button>
+        <div class="va-progress" data-va-progress>
+          <div class="va-progress-fill"></div>
+          <div class="va-progress-thumb"></div>
+        </div>
+        <span class="va-time">
+          <span class="va-time-cur">0:00</span><span class="va-time-sep">/</span><span class="va-time-tot">0:00</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Sample 3 -->
+    <div class="va-card">
+      <div class="va-title">Sample 3 — Animal / texture</div>
+      <div class="va-slider" data-va-slider>
+        <video class="va-video va-after" muted loop autoplay playsinline preload="metadata"
+               data-src="demo_3_hq.mp4"></video>
+        <video class="va-video va-before" muted loop autoplay playsinline preload="metadata"
+               data-src="demo_3_lq.mp4"></video>
+        <div class="va-divider"></div>
+        <div class="va-handle">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M8 5l-6 7 6 7V5zm8 0v14l6-7-6-7z"/></svg>
+        </div>
+        <div class="va-label va-label-left">LQ Input</div>
+        <div class="va-label va-label-right">SwiftVR</div>
+      </div>
+      <div class="va-controls" data-va-controls>
+        <button class="va-btn-play" aria-label="Play / Pause" type="button">
+          <svg class="icon-play"  viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+          <svg class="icon-pause" viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+        </button>
+        <div class="va-progress" data-va-progress>
+          <div class="va-progress-fill"></div>
+          <div class="va-progress-thumb"></div>
+        </div>
+        <span class="va-time">
+          <span class="va-time-cur">0:00</span><span class="va-time-sep">/</span><span class="va-time-tot">0:00</span>
+        </span>
+      </div>
+    </div>
+
+    <p class="content has-text-centered slider-note">
+      <small>
+        Videos are H.264 MP4 served from <code>static/videos/</code>. The slider syncs the
+        two videos' playback time every ~800 ms.
+      </small>
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     ABSTRACT
+     ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Real-time video restoration for live streams requires high-resolution outputs under
+            strict per-frame latency. Existing one-step diffusion-based VR models remain hard to
+            deploy on consumer GPUs due to two main bottlenecks:
+            <em>quadratic spatial attention</em> at high resolutions and the
+            <em>latency–memory overhead</em> of large video autoencoders.
+          </p>
+          <p>
+            We present <strong>SwiftVR</strong>, a streaming one-step generative VR framework
+            that reduces both bottlenecks under a causal chunk-wise protocol. For attention,
+            <strong>mask-free shifted-window self-attention (MFSWA)</strong> gathers each spatial
+            window into a dense tensor via deterministic indexing, keeping every attention call
+            on the standard scaled dot-product attention path — no masks, cyclic shifts, padding,
+            or hardware-specific sparse kernels. For autoencoding, a lightweight
+            <strong>Restoration-aware Autoencoder (ReAE)</strong> enables fast chunk-wise
+            decoding while preserving reconstruction quality.
+          </p>
+          <p>
+            On a single H100, SwiftVR sustains <b>31&nbsp;FPS</b> at \(2560\!\times\!1440\) and
+            <b>14&nbsp;FPS</b> at \(3840\!\times\!2160\), whereas all compared diffusion-based VR
+            baselines exceed memory at 4K. On a consumer RTX 5090, SwiftVR reaches
+            <b>26&nbsp;FPS</b> at \(1920\!\times\!1080\). To our knowledge, SwiftVR is the
+            <strong>first generative VR model to achieve real-time 1080p streaming on a
+            consumer-grade GPU</strong>, while attaining strong no-reference perceptual quality
+            with lower inference cost.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     METHOD
+     ============================================================ -->
+<section class="section section-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full has-text-centered">
+        <h2 class="title is-3">Method</h2>
+        <div class="content has-text-justified">
+          <p>
+            SwiftVR is a streaming, one-step generative VR framework. It processes video causally
+            in fixed-size chunks, bounding the temporal length \(T\) of each DiT tensor. The DiT
+            is optimized in three stages — full-attention latent flow matching, mask-free
+            shifted-window distillation, and joint pixel-space fine-tuning with the ReAE —
+            and deployed under a causal chunk-wise streaming protocol.
+          </p>
+        </div>
+
+        <figure class="image method-fig">
+          <img src="static/images/pipeline.png" alt="SwiftVR pipeline overview"
+               onerror="this.style.background='#f5f5f5';this.style.minHeight='240px';" />
+        </figure>
+        <p class="caption">
+          <strong>Overview of the SwiftVR pipeline.</strong>
+          <em>(a)</em> Stage 1: full-attention DiT learns the constant velocity
+          \(v = z_\mathrm{LQ} - z_\mathrm{HQ}\) along
+          \(z_t = (1{-}t)z_\mathrm{HQ} + t\,z_\mathrm{LQ}\).
+          <em>(b)</em> Stage 2: distillation into a mask-free shifted-window student.
+          <em>(c)</em> Stage 3: joint pixel-space fine-tuning with ReAE.
+          <em>(d)</em> Causal streaming inference, chunk by chunk.
+        </p>
+
+        <div class="columns is-vcentered mfswa-row">
+          <div class="column is-7 has-text-left">
+            <h3 class="title is-4">Mask-free Shifted-Window Self-Attention (MFSWA)</h3>
+            <p class="mfswa-text">
+              MFSWA invokes attention through the standard SDPA interface with
+              <code>attn_mask=None</code> and no padding tokens. Unlike Swin SW-MSA which
+              uses cyclic shifts and attention masks, MFSWA realizes shifts via deterministic
+              priority-coherent scatter. Unlike SeedVR / SeedVR2 which use variable-sized
+              boundary windows, MFSWA keeps a fixed window size and handles boundaries with
+              uniform-shape boundary-clamped gather. These choices remove the operations that
+              would otherwise force SDPA off the dense path.
+            </p>
+          </div>
+          <div class="column is-5">
+            <figure class="mfswa-fig">
+              <img src="static/images/sw.jpg" alt="MFSWA illustration"
+                   onerror="this.style.background='#f5f5f5';this.style.minHeight='80px';" />
+            </figure>
+            <p class="caption mfswa-cap">
+              <strong>MFSWA.</strong> (a) Even-layer windows. (b) Half-window-shifted base
+              partition. (c) Odd-layer effective windows, each pre-gathered into a dense
+              tensor and processed by standard SDPA without masks, cyclic shifts, or padding.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     RESULTS — TABLES
+     ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Results</h2>
+
+    <h3 class="title is-5">Efficiency at 2560×1440 (single H100, causal streaming, 24 frames)</h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th class="has-text-right">Avg. Time (s) ↓</th>
+            <th class="has-text-right">FPS ↑</th>
+            <th class="has-text-right">Peak Mem. (GB) ↓</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>DOVE (tile)</td><td class="has-text-right">27.615</td><td class="has-text-right">0.87</td><td class="has-text-right">59.24</td></tr>
+          <tr><td>SeedVR2-3B (tile)</td><td class="has-text-right">17.320</td><td class="has-text-right">1.39</td><td class="has-text-right">35.35</td></tr>
+          <tr><td>FlashVSR-Tiny</td><td class="has-text-right">2.493</td><td class="has-text-right">9.61</td><td class="has-text-right">34.35</td></tr>
+          <tr class="row-ours">
+            <td><b>SwiftVR (Ours)</b></td>
+            <td class="has-text-right"><b>0.766</b></td>
+            <td class="has-text-right"><b>31.32</b></td>
+            <td class="has-text-right">38.01</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">
+      At <strong>3840×2160</strong>, every compared diffusion-based VR baseline OOMs on a single
+      H100, whereas SwiftVR sustains <strong>13.84 FPS</strong>.
+    </p>
+
+    <h3 class="title is-5" style="margin-top:2.5rem;">MFSWA ablation</h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped">
+        <thead>
+          <tr>
+            <th>Variant</th>
+            <th class="has-text-right">PSNR ↑</th>
+            <th class="has-text-right">LPIPS ↓</th>
+            <th class="has-text-right">DiT Time (ms)</th>
+            <th class="has-text-right">FPS ↑</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Full Attention (Teacher)</td><td class="has-text-right">25.86</td><td class="has-text-right">0.2417</td><td class="has-text-right">1039.11</td><td class="has-text-right">19.36</td></tr>
+          <tr><td>Masked SWA</td><td class="has-text-right">25.34</td><td class="has-text-right">0.2637</td><td class="has-text-right">674.49</td><td class="has-text-right">27.47</td></tr>
+          <tr class="row-ours">
+            <td><b>MFSWA (Ours)</b></td>
+            <td class="has-text-right">25.58</td>
+            <td class="has-text-right">0.2508</td>
+            <td class="has-text-right"><b>566.31</b></td>
+            <td class="has-text-right"><b>31.32</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">
+      Masked SWA uses the same spatial partition as MFSWA, but its block-diagonal mask disables
+      fused Flash/cuDNN SDPA — hence slower despite identical geometry. MFSWA keeps every call
+      on the dense path.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     QUALITATIVE - MAIN FIG
+     ============================================================ -->
+<section class="section section-light">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Qualitative Comparison</h2>
+    <p class="content has-text-centered">
+      Real-world video clips. Compared with regression baselines and other one-step diffusion VR
+      methods, SwiftVR yields sharper feather textures, cleaner branch boundaries, and better
+      leaf separation, with fewer halos or color shifts.
+    </p>
+    <figure class="image method-fig">
+      <img src="static/images/visual_fig.png" alt="Qualitative comparison on real-world videos"
+           onerror="this.style.background='#f5f5f5';this.style.minHeight='280px';" />
+    </figure>
+    <p class="caption has-text-centered">
+      Columns: LQ input, Real-ESRGAN, RealBasicVSR, RealViFormer, DOVE, SeedVR2-3B,
+      FlashVSR-Tiny, SwiftVR (Ours). Best viewed at high magnification.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     QUALITATIVE - SUPPLEMENTARY (visual_sup)
+     ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Additional Qualitative Results</h2>
+    <p class="content has-text-centered">
+      Additional comparisons on real-world videos covering distant building structures,
+      illustrated facial patterns, animal fur, and bird plumage. SwiftVR restores clearer
+      structural boundaries and more natural fine details — roof edges, facial contours,
+      dog fur, feather textures — while maintaining stable color and fewer local artifacts.
+    </p>
+    <figure class="image method-fig">
+      <img src="static/images/visual_sup.png" alt="Additional qualitative results"
+           onerror="this.style.background='#f5f5f5';this.style.minHeight='280px';" />
+    </figure>
+    <p class="caption has-text-centered">
+      Additional visualization results from the supplementary material.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     BIBTEX
+     ============================================================ -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3 has-text-centered">BibTeX</h2>
+    <div class="bibtex-wrap">
+      <button class="copy-btn" onclick="copyBibtex(this)">
+        <i class="fas fa-copy"></i> Copy
+      </button>
+<pre><code id="bibtex-code">@article{swiftvr2026,
+  title   = {SwiftVR: Real-Time One-Step Generative Video Restoration},
+  author  = {Author One and Author Two and Author Three and Author Four},
+  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  year    = {2026}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ACK + FOOTER
+     ============================================================ -->
+<footer class="footer">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            SwiftVR builds on
+            <a href="https://github.com/Wan-Video" target="_blank">Wan2.2-TI2V-5B</a>,
+            <a href="https://github.com/madebyollin/taehv" target="_blank">TAEHV</a>,
+            <a href="https://github.com/ckkelvinchan/RealBasicVSR" target="_blank">RealBasicVSR</a>,
+            <a href="https://github.com/zhengchen1999/DOVE" target="_blank">DOVE</a>,
+            <a href="https://github.com/ByteDance-Seed/SeedVR" target="_blank">SeedVR2</a>,
+            <a href="https://github.com/OpenImagingLab/FlashVSR" target="_blank">FlashVSR</a>, and
+            <a href="https://github.com/Tele-AI/UltraVideo" target="_blank">UltraVideo</a>.
+          </p>
+          <p>
+            Page template adapted from
+            <a href="https://nerfies.github.io/" target="_blank">Nerfies</a>. Licensed under
+            <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="static/js/before-after.js"></script>
+<script>
+function copyBibtex(btn){
+  const code = document.getElementById('bibtex-code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+    setTimeout(()=>btn.innerHTML = orig, 1500);
+  });
+}
+</script>
+
+</body>
+</html>

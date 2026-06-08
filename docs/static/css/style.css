@@ -1,0 +1,579 @@
+/* ============================================================
+   SwiftVR project page — Nerfies / SeedVR2 style
+   ============================================================ */
+
+body{
+  font-family: 'Noto Sans', 'Google Sans', sans-serif;
+  color: #4a4a4a;
+  background: #ffffff;
+}
+
+.publication-title{
+  font-family: 'Google Sans','Castoro', serif;
+  font-weight: 700;
+  font-size: 2.7rem !important;
+  line-height: 1.15 !important;
+  color: #363636;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.6rem !important;
+}
+@media (max-width: 768px){
+  .publication-title{ font-size: 2rem !important; }
+}
+.brand-swift{
+  color: #2c63d3;          /* SeedVR2-like blue accent */
+  font-weight: 700;
+}
+
+.publication-authors{
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  color: #4a4a4a;
+}
+.publication-authors .author-block{
+  display: inline-block;
+  margin: 0 4px;
+}
+.publication-authors a{
+  color: #2c63d3;
+  text-decoration: none;
+}
+.publication-authors a:hover{ text-decoration: underline; }
+.publication-authors sup{ color: #2c63d3; }
+
+.publication-venue{
+  margin-top: 0.6rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #b71c1c;
+}
+
+.publication-links{
+  margin-top: 1rem;
+}
+.publication-links .link-block{
+  display: inline-block;
+  margin: 4px 6px;
+}
+.publication-links .button.is-dark{
+  background-color: #363636;
+  border: none;
+  font-weight: 500;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 0.95rem;
+  padding-left: 18px;
+  padding-right: 18px;
+  transition: transform .12s, background .15s;
+}
+.publication-links .button.is-dark:hover{
+  background-color: #2c63d3;
+  transform: translateY(-1px);
+}
+.publication-links .button .icon{ margin-right: 4px; }
+
+/* ============================================================
+   HERO BACKGROUND
+   ============================================================ */
+.hero{ background: #ffffff; }
+.hero.teaser{ padding-top: 0; padding-bottom: 0; }
+.hero.teaser img{
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 18px rgba(0,0,0,0.06);
+}
+.hero.teaser .subtitle{
+  margin-top: 1.4rem;
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: #4a4a4a;
+  font-weight: 400;
+}
+.dnerf{
+  font-style: italic;
+  color: #2c63d3;
+  font-weight: 600;
+}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.section{ padding: 3.5rem 1.5rem; }
+.section-light{ background: #f7f9fc; }
+
+.title.is-3{
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 700;
+  color: #363636;
+  margin-bottom: 1.5rem !important;
+}
+.title.is-4, .title.is-5{
+  font-family: 'Google Sans', sans-serif;
+  color: #363636;
+}
+.title.is-5{ margin-top: 0.5rem; }
+
+.content p{ font-size: 1.05rem; line-height: 1.7; }
+.content strong{ color: #363636; }
+.content em{ color: #2c63d3; font-style: italic; }
+.content code{
+  background: #eef2f8;
+  color: #2c63d3;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.95em;
+}
+
+.caption{
+  font-size: 0.92rem;
+  color: #6a6a6a;
+  line-height: 1.55;
+  margin-top: 0.8rem;
+  text-align: justify;
+}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats-section{
+  padding-top: 0;
+  padding-bottom: 2.5rem;
+}
+.stat-row{ margin-top: 0 !important; }
+.stat-card{
+  text-align: center;
+  padding: 22px 12px;
+  background: #ffffff;
+  border: 1px solid #e6ecf3;
+  border-radius: 8px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.stat-card:hover{
+  transform: translateY(-2px);
+  border-color: #2c63d3;
+  box-shadow: 0 6px 18px rgba(44,99,211,0.08);
+}
+.stat-num{
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 700;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: #2c63d3;
+  display: inline-flex;
+  align-items: baseline;
+}
+.stat-unit{
+  font-size: 0.95rem;
+  color: #6a6a6a;
+  margin-left: 2px;
+  font-weight: 500;
+}
+.stat-cap{
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: #6a6a6a;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ============================================================
+   METHOD FIGURES
+   ============================================================ */
+.method-fig{
+  margin: 1rem auto;
+  max-width: 980px;
+}
+.method-fig img{
+  width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+  background: #fff;
+  display: block;
+}
+.method-fig.narrow{ max-width: 760px; }
+
+/* ============================================================
+   MFSWA SIDE-BY-SIDE ROW (text left, illustration right)
+   ============================================================ */
+
+/* ┌──────────────────────────────────────────────────────────┐
+   │  >>>  ADJUST sw.jpg HEIGHT HERE  <<<                     │
+   │  Change --mfswa-fig-max-height to any pixel value to     │
+   │  resize the MFSWA illustration without editing HTML.     │
+   │                                                          │
+   │    smaller : 80px ~ 120px                                │
+   │    medium  : 140px ~ 180px                               │
+   │    default : 200px                                       │
+   │    larger  : 240px ~ 320px                               │
+   │                                                          │
+   │  Width auto-scales to preserve the aspect ratio.         │
+   │  After editing this value, hard-refresh the browser      │
+   │  (Cmd+Shift+R / Ctrl+Shift+R) to bypass CSS cache.       │
+   └──────────────────────────────────────────────────────────┘ */
+:root{
+  --mfswa-fig-max-height: 200px;
+}
+
+.mfswa-row{
+  margin-top: 2.5rem !important;
+  text-align: left;
+}
+.mfswa-row .title.is-4{
+  margin-bottom: 0.8rem !important;
+}
+.mfswa-text{
+  text-align: justify;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: #4a4a4a;
+  margin: 0;
+}
+
+/* The figure is a flex container with a fixed max height.
+   The img sits inside, sized by max-height with width auto-preserved.
+   !important defends against Bulma's .image rules in case anyone
+   re-adds class="image" on the <figure>. */
+.mfswa-fig{
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: var(--mfswa-fig-max-height);
+}
+.mfswa-fig img{
+  max-height: var(--mfswa-fig-max-height) !important;
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  display: block !important;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+  background: #fff;
+}
+.mfswa-cap{
+  text-align: left;
+  font-size: 0.85rem;
+  margin-top: 0.7rem;
+}
+@media (max-width: 768px){
+  .mfswa-row{ text-align: left; }
+  /* on mobile drop the height cap so the image scales by column width */
+  .mfswa-fig{ max-height: none; }
+  .mfswa-fig img{ max-height: none !important; max-width: 100% !important; }
+}
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.table-container{ margin-bottom: 0.6rem; }
+.table{
+  font-size: 0.95rem;
+  background: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+.table thead th{
+  background: #363636;
+  color: #ffffff !important;
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 500;
+  border: none;
+}
+.table tbody tr.row-ours{
+  background: #e8f0ff !important;
+}
+.table tbody tr.row-ours td{
+  color: #1c3a7a;
+  border-top: 1px solid #2c63d3;
+}
+
+/* ============================================================
+   BEFORE / AFTER VIDEO SLIDER
+   ============================================================ */
+.slider-help{
+  color: #6a6a6a;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+.slider-note{
+  color: #9a9a9a;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+}
+
+.va-card{
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  border: 1px solid #eef2f8;
+}
+.va-title{
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #363636;
+  margin-bottom: 12px;
+  padding-left: 4px;
+}
+
+.va-slider{
+  position: relative;
+  width: 100%;
+  /* aspect-ratio is set dynamically by JS once video metadata loads,
+     so each slider matches its own video's true aspect ratio.
+     The 16/9 below is only a placeholder used before metadata arrives. */
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.va-video{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* contain keeps the full video visible without cropping.
+     Once JS matches slider aspect-ratio to the video, this behaves
+     identically to "cover" but is safer for mismatched LQ/HQ inputs. */
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+/* The "before" (LQ) video sits on top of the "after" (SwiftVR) video,
+   clipped to show only its LEFT portion. JS updates this clip-path on drag.
+   inset(top right bottom left): inset(0 50% 0 0) hides the right 50%,
+   leaving the left 50% visible — exactly what we want. */
+.va-before{
+  -webkit-clip-path: inset(0 50% 0 0);
+          clip-path: inset(0 50% 0 0);
+  z-index: 1;
+}
+
+.va-divider{
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;            /* JS will update */
+  width: 2px;
+  background: rgba(255,255,255,0.95);
+  transform: translateX(-1px);
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+.va-handle{
+  position: absolute;
+  top: 50%;
+  left: 50%;            /* JS will update */
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #363636;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+  cursor: ew-resize;
+  z-index: 3;
+  transition: transform .12s, background .12s;
+}
+.va-handle:hover,
+.va-slider.is-dragging .va-handle{
+  background: #2c63d3;
+  color: #ffffff;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.va-label{
+  position: absolute;
+  top: 14px;
+  padding: 5px 12px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  z-index: 2;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+.va-label-left{ left: 14px; }
+.va-label-right{ right: 14px; background: rgba(44,99,211,0.85); }
+
+/* ============================================================
+   PROGRESS BAR + TIME + PLAY/PAUSE (under each slider)
+   ============================================================ */
+.va-controls{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px 2px;
+}
+.va-btn-play{
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #363636;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background .15s, transform .12s;
+}
+.va-btn-play:hover{
+  background: #2c63d3;
+  transform: scale(1.05);
+}
+.va-btn-play .icon-pause{ display: none; }
+.va-btn-play.is-playing .icon-pause{ display: inline-block; }
+.va-btn-play.is-playing .icon-play{ display: none; }
+
+/* The progress bar is a 20px-tall hit area; the visible track is
+   drawn via ::before so we don't lose pointer events on a thin div.
+   touch-action: none prevents the browser from interpreting drags
+   as page scrolls on mobile. */
+.va-progress{
+  flex: 1 1 auto;
+  position: relative;
+  height: 20px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.va-progress::before{
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 5px;
+  background: #e6ecf3;
+  border-radius: 3px;
+  pointer-events: none;
+  transition: height .15s;
+}
+.va-progress-fill{
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 5px;
+  width: 0;
+  background: #2c63d3;
+  border-radius: 3px;
+  pointer-events: none;
+  transition: height .15s;
+}
+.va-progress-thumb{
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border: 2px solid #2c63d3;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s, transform .12s ease;
+}
+.va-progress:hover::before,
+.va-progress.is-seeking::before,
+.va-progress:hover .va-progress-fill,
+.va-progress.is-seeking .va-progress-fill{
+  height: 7px;
+}
+.va-progress:hover .va-progress-thumb,
+.va-progress.is-seeking .va-progress-thumb{
+  opacity: 1;
+}
+.va-progress.is-seeking .va-progress-thumb{
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.va-time{
+  flex: 0 0 auto;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #6a6a6a;
+  white-space: nowrap;
+  min-width: 90px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.va-time-sep{ margin: 0 4px; opacity: 0.5; }
+.va-time-cur{ color: #363636; }
+
+/* ============================================================
+   BIBTEX
+   ============================================================ */
+.bibtex-wrap{
+  position: relative;
+  background: #1f2329;
+  border-radius: 8px;
+  padding: 24px 22px 20px;
+  overflow-x: auto;
+}
+.bibtex-wrap pre{
+  background: transparent;
+  margin: 0;
+  padding: 0;
+}
+.bibtex-wrap code{
+  background: transparent;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.92rem;
+  color: #e8edf3;
+  white-space: pre;
+  line-height: 1.65;
+}
+.copy-btn{
+  position: absolute;
+  top: 12px; right: 12px;
+  background: #2c63d3;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s;
+}
+.copy-btn:hover{ background: #1c3a7a; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{
+  background: #f7f9fc;
+  padding: 2.5rem 1.5rem 3rem;
+  border-top: 1px solid #eef2f8;
+}
+.footer p{ font-size: 0.9rem; color: #6a6a6a; }
+.footer a{ color: #2c63d3; }
+
+/* MathJax style overrides */
+mjx-container{ font-size: 1em !important; }
