@@ -6,7 +6,7 @@
 
 <p>
   <a href="https://arxiv.org/abs/XXXX.XXXXX"><img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg?style=flat-square" alt="arXiv"></a>
-  <a href="https://github.com/H-oliday/SwiftVR/"><img src="https://img.shields.io/badge/Project-Page-1f8acb.svg?style=flat-square" alt="Project Page"></a>
+  <a href="https://h-oliday.github.io/SwiftVR//"><img src="https://img.shields.io/badge/Project-Page-1f8acb.svg?style=flat-square" alt="Project Page"></a>
   <a href="https://huggingface.co/H-oliday/SwiftVR"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Model-ffce00.svg?style=flat-square" alt="HuggingFace"></a>
   <a href="https://github.com/H-oliday/SwiftVR/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat-square" alt="License"></a>
 </p>
