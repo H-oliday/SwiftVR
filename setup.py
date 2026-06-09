@@ -1,4 +1,4 @@
-"""Packaging for the RVR inference package."""
+"""Packaging for the SwiftVR inference package."""
 
 from pathlib import Path
 from setuptools import setup, find_packages
