@@ -1,5 +1,5 @@
-"""RVR: one-step generative streaming real-time video restoration."""
+"""SwiftVR: Real-Time One-Step Generative Video Restoration."""
 
-from .pipeline import RVRPipeline, StreamSession
+from .pipeline import SwiftVRPipeline, StreamSession
 
 __version__ = "0.1.0"
