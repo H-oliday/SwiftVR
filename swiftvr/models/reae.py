@@ -63,7 +63,6 @@ class TGrow(nn.Module):
         super().__init__()
         self.stride = stride
         self.n_f = n_f
-        self.conv = nn.Conv2d(n_f, n_f * stride, 1, bias=False)
 
         if stride == 1:
             self.proj = nn.Conv2d(n_f, n_f, 1, bias=False)
