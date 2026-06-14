@@ -3,7 +3,7 @@
 Thin wrapper around ``swiftvr.SwiftVRPipeline``; all defaults live in
 ``SwiftVRPipeline.restore_video``.
 
-    python scripts/inference.py \
+    python script/inference.py \
         --input low_quality.mp4 --output restored.mp4 \
         --checkpoint checkpoints/ --resolution 1920x1080
 """

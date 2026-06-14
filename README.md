@@ -126,7 +126,7 @@ tail = session.flush()                                  # flush the final buffer
 ### Command line
 
 ```bash
-python scripts/inference.py \
+python script/inference.py \
   --input low_quality.mp4 \
   --output restored.mp4 \
   --checkpoint checkpoints/ \
@@ -145,7 +145,7 @@ SwiftVR/
 ├── LICENSE
 ├── requirements.txt
 ├── setup.py
-├── scripts/
+├── script/
 │   └── inference.py              # CLI entry point, thin wrapper over SwiftVRPipeline
 └── swiftvr/
     ├── __init__.py               # exports SwiftVRPipeline
