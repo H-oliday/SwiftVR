@@ -126,7 +126,7 @@ tail = session.flush()                                  # flush the final buffer
 ### Command line
 
 ```bash
-python scripts/inference.py \
+python script/inference.py \
   --input low_quality.mp4 \
   --output restored.mp4 \
   --checkpoint checkpoints/ \
