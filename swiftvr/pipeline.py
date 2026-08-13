@@ -57,6 +57,8 @@ class SwiftVRPipeline:
         self.dit_stream = StreamingDiT(transformer, overlap=0)
 
         self.device = torch.device("cpu")
+        self.reae_device = torch.device("cpu")
+        self.transformer_device = torch.device("cpu")
         self.dtype = torch.float32
         self._prepared = False
 
@@ -75,6 +77,8 @@ class SwiftVRPipeline:
         upscale_mode: str = "bilinear",
         device=None,
         dtype=None,
+        reae_device=None,
+        transformer_device=None,
     ) -> "SwiftVRPipeline":
         root = Path(checkpoint_dir)
 
@@ -84,19 +88,28 @@ class SwiftVRPipeline:
 
         pipe = cls(reae, transformer, prompt_emb, upscale_mode=upscale_mode)
         if device is not None or dtype is not None:
-            pipe.to(device or "cpu", dtype=dtype or "float32")
+            pipe.to(device or "cpu", dtype=dtype or "float32",
+                    reae_device=reae_device, transformer_device=transformer_device)
         return pipe
 
-    def to(self, device=None, dtype=None, *, attention_backend="auto", torch_compile=False):
+    def to(self, device=None, dtype=None, *, reae_device=None, transformer_device=None,
+           attention_backend="auto", torch_compile=False):
         """Move the models to ``device``/``dtype`` and prepare them for inference
-        (fused projections + shifted-window self-attention, once)."""
+        (fused projections + shifted-window self-attention, once).
+
+        The ReAE (encoder/decoder) and the DiT transformer can be placed on
+        different GPUs via ``reae_device``/``transformer_device`` (default: same
+        as ``device``). Latents travel between the two cards each chunk.
+        """
         if device is not None:
             self.device = torch.device(device)
+        self.reae_device = torch.device(reae_device or self.device)
+        self.transformer_device = torch.device(transformer_device or self.device)
         if dtype is not None:
             self.dtype = _as_dtype(dtype)
 
-        self.reae.to(self.device, self.dtype).eval()
-        self.transformer.to(self.device, self.dtype).eval()
+        self.reae.to(self.reae_device, self.dtype).eval()
+        self.transformer.to(self.transformer_device, self.dtype).eval()
 
         enable_max_fps_runtime(allow_tf32=True)
         if not self._prepared and hasattr(self.transformer, "prepare_for_inference"):
@@ -184,6 +197,8 @@ class SwiftVRPipeline:
             prompt_emb=self.prompt_emb,
             device=self.device,
             dtype=self.dtype,
+            reae_device=self.reae_device,
+            transformer_device=self.transformer_device,
             total_frames=total_frames,
             clip_len=clip_len,
             lq_h=lq_h, lq_w=lq_w,

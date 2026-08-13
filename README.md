@@ -100,6 +100,23 @@ pipe.restore_video("low_quality.mp4", "restored.mp4", upscale=4)
 
 `restore_video` also accepts an image folder as input and can write a PNG sequence with `png_save=True`.
 
+### Dual GPU (ReAE + DiT split)
+
+When a single card cannot hold both the Restoration-aware Autoencoder and the DiT, place them on two GPUs. Latents are copied between devices each chunk. This is supported by the offline `restore_video` path.
+
+```python
+pipe = SwiftVRPipeline.from_pretrained("checkpoints/").to(
+    "cuda:0",
+    dtype="bfloat16",
+    reae_device="cuda:0",
+    transformer_device="cuda:1",
+)
+
+pipe.restore_video("low_quality.mp4", "restored.mp4", resolution=(2560, 1440))
+```
+
+The runner pins each stage to the matching CUDA device and synchronizes before a cross-GPU copy. This avoids SageAttention / FlashAttention launching on the ambient device's stream while tensors live on the other card (which otherwise corrupts individual output chunks). If `reae_device` / `transformer_device` are omitted, both modules stay on `device` (single-card behaviour is unchanged).
+
 Tunable knobs include:
 
 * `clip_len`: middle chunk size, multiple of 4
