@@ -15,6 +15,10 @@
 
 * [2026/06] Release the inference code and pretrained weights 🎉
 
+## Community Works
+
+* [LightX2V](https://github.com/ModelTC/LightX2V) brings **faster inference and lower GPU memory usage** to SwiftVR (**1.91× speedup and 65.71% lower peak GPU memory per request** on a single H100). It also supports **multi-GPU acceleration**. Ready-to-use scripts cover image and video super-resolution, offline inference, and API serving. **[Get started with LightX2V →](https://github.com/ModelTC/LightX2V/tree/main/scripts/swiftvr)**
+
 ## ✨ Highlights
 
 * **Mask-free shifted-window self-attention (MFSWA).** Each spatial window is **pre-gathered into a dense tensor**, so every attention call reduces to a single standard scaled-dot-product (SDPA) call — *no attention mask, cyclic shift, or padding ever enters the graph*. This gives a **1.62× throughput gain over its full-attention teacher** at essentially identical quality, with **no dedicated sparse kernel**.
