@@ -4,6 +4,7 @@ Overlaps host reading, host->device copy, GPU restoration and disk writing on
 separate threads/CUDA streams to maximise sustained throughput.
 """
 
+import contextlib
 import time
 import queue
 import threading
@@ -76,6 +77,8 @@ def run_pipeline(
     prompt_emb,
     device,
     dtype,
+    reae_device=None,
+    transformer_device=None,
     total_frames: int,
     clip_len: int,
     lq_h: int,
@@ -103,9 +106,39 @@ def run_pipeline(
     frames_state = {"next_idx": 0, "saved": 0}
     png_written_once = set()
 
+    if reae_device is None:
+        reae_device = device
+    if transformer_device is None:
+        transformer_device = device
+    reae_device = torch.device(reae_device)
+    transformer_device = torch.device(transformer_device)
+
     use_cuda = torch.cuda.is_available() and device.type == "cuda"
     h2d_stream = torch.cuda.Stream(device=device) if use_cuda else None
     d2h_stream = torch.cuda.Stream(device=device) if use_cuda else None
+
+    def on_device(dev):
+        """Pin the ambient CUDA device for a stage.
+
+        Custom attention kernels (SageAttention, FlashAttention) launch on the
+        *ambient* device's stream rather than the device of their inputs, and
+        SageAttention additionally calls ``torch.cuda.set_device`` without
+        restoring it. Without this guard the DiT kernels can end up launched on
+        the ReAE card's stream, unsynchronised against the card that actually
+        holds the tensors, which silently corrupts individual output chunks.
+        """
+        if not use_cuda:
+            return contextlib.nullcontext()
+        return torch.cuda.device(dev)
+
+    def cross_to(tensor, dst):
+        """Move a latent between the two cards, draining the producer first."""
+        if tensor.device == dst:
+            return tensor
+        if use_cuda:
+            torch.cuda.current_stream(tensor.device).synchronize()
+        with on_device(dst):
+            return tensor.to(dst)
 
     def record_error(stage_name):
         stage_errors.append((stage_name, traceback.format_exc()))
@@ -208,25 +241,35 @@ def run_pipeline(
                 else:
                     t0 = time.perf_counter()
 
-                clip_rgb = preprocess_clip_uint8(
-                    item.gpu_rgb, out_h=out_h, out_w=out_w, mode=upscale_mode,
-                    pad_h=pad_h, pad_w=pad_w, dtype=dtype)
-                z = tae_stream.encode_chunk_fixed(clip_rgb, spec)
+                with on_device(reae_device):
+                    clip_rgb = preprocess_clip_uint8(
+                        item.gpu_rgb, out_h=out_h, out_w=out_w, mode=upscale_mode,
+                        pad_h=pad_h, pad_w=pad_w, dtype=dtype)
+                    z = tae_stream.encode_chunk_fixed(clip_rgb, spec)
 
                 if spec.ctype == ChunkType.LAST:
-                    z_ntchw = dit_stream.denoise_last_chunk(
-                        z, spec, prompt_emb, prev_dit_out_cpu, n_lat, device, dtype)
+                    z_t = cross_to(z, transformer_device)
+                    with on_device(transformer_device):
+                        z_den = dit_stream.denoise_last_chunk(
+                            z_t, spec, prompt_emb, prev_dit_out_cpu, n_lat,
+                            transformer_device, dtype)
+                    z_ntchw = cross_to(z_den, reae_device)
                 else:
-                    z_bcfhw = z.permute(0, 2, 1, 3, 4).contiguous()
-                    z_den = dit_stream.denoise(z_bcfhw, prompt_emb)
-                    z_ntchw = z_den.permute(0, 2, 1, 3, 4).contiguous()
-                    prev_dit_out_cpu = z_bcfhw[:, :, -n_lat:].detach().cpu().clone()
+                    with on_device(reae_device):
+                        z_perm = z.permute(0, 2, 1, 3, 4).contiguous()
+                    z_bcfhw = cross_to(z_perm, transformer_device)
+                    with on_device(transformer_device):
+                        z_den = dit_stream.denoise(z_bcfhw, prompt_emb)
+                        z_out = z_den.permute(0, 2, 1, 3, 4).contiguous()
+                        prev_dit_out_cpu = z_bcfhw[:, :, -n_lat:].detach().cpu().clone()
+                    z_ntchw = cross_to(z_out, reae_device)
 
-                rgb_out = tae_stream.decode_chunk_fixed(z_ntchw, spec)
-                if rgb_out is not None and rgb_out.shape[1] > 0:
-                    item.rgb_out_gpu = crop_spatial_padding_ntchw(rgb_out, pad_h, pad_w).detach()
-                else:
-                    item.rgb_out_gpu = None
+                with on_device(reae_device):
+                    rgb_out = tae_stream.decode_chunk_fixed(z_ntchw, spec)
+                    if rgb_out is not None and rgb_out.shape[1] > 0:
+                        item.rgb_out_gpu = crop_spatial_padding_ntchw(rgb_out, pad_h, pad_w).detach()
+                    else:
+                        item.rgb_out_gpu = None
 
                 if use_cuda:
                     t_end.record(torch.cuda.current_stream(device=device))
