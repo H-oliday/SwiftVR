@@ -173,15 +173,32 @@ We thank the authors of [DOVE](https://github.com/zhengchen1999/DOVE), [SeedVR2]
 
 ## 📜 License
 
-SwiftVR is released under the **Apache License 2.0**.
+### Source Code
+
+The source code in this GitHub repository is licensed under the
+Apache License 2.0. See the [LICENSE](./LICENSE) file for details.
 
 Copyright 2026 SwiftVR Authors.
 
-Licensed under the Apache License, Version 2.0. You may obtain a copy of the License at:
+### Model Weights
 
-https://www.apache.org/licenses/LICENSE-2.0
+Model weights are distributed separately through Hugging Face and are
+subject to the license included in the corresponding model repository
+and release.
 
-Unless required by applicable law or agreed to in writing, this project is distributed on an **"AS IS" BASIS**, without warranties or conditions of any kind, either express or implied. See the [LICENSE](./LICENSE) file for the full license text.
+The Apache License 2.0 applicable to the source code does not
+automatically apply to separately distributed model weights.
+
+Commercial use of model weights released under the SwiftVR Research
+License requires prior written authorization from the SwiftVR authors.
+
+For commercial licensing inquiries, please contact:
+
+- Email: kakibluee@gmail.com or chxy95@gmail.com
+
+Historical versions remain subject to the license under which they were
+originally released. A later license change does not retroactively revoke
+rights previously granted.
 
 
 
@@ -189,7 +206,7 @@ Unless required by applicable law or agreed to in writing, this project is distr
 
 If you have any questions, feel free to reach out:
 
-* Email: [kakibluee@gmail.com](mailto:kakibluee@gmail.com)
+* Email: kakibluee@gmail.com or chxy95@gmail.com
 
 <div align="center">
 <sub>If SwiftVR is useful to your research or product, please consider giving it a ⭐.</sub>
